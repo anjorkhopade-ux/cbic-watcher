@@ -1,8 +1,10 @@
 #!/usr/bin/env python3
 """
-CBIC Tax Information portal watcher (v2 - reads the site's own data feed).
+CBIC Tax Information portal watcher (v3).
 Reads the "Latest Updates" feed for GST, Customs, Central Excise, Service Tax and
 HSNS Cess, finds documents not sent before, downloads the PDF and sends it to Make.
+All requests are made from inside the browser page (CBIC's server certificate
+chain is incomplete; real Chrome copes with that, other HTTP clients don't).
 Remembers every sent document in state/seen.json so nothing is ever sent twice.
 First run records everything and sends nothing.
 """
@@ -57,6 +59,22 @@ def save_state(state):
     tmp.replace(STATE_FILE)
 
 
+PAGE_FETCH_JS = """async ([u, h, bin]) => {
+    const r = await fetch(u, {headers: h, credentials: 'include'});
+    if (!bin) return {status: r.status, body: await r.text()};
+    const a = new Uint8Array(await r.arrayBuffer());
+    let s = ''; const CH = 0x8000;
+    for (let i = 0; i < a.length; i += CH) s += String.fromCharCode.apply(null, a.subarray(i, i + CH));
+    return {status: r.status, body: btoa(s)};
+}"""
+
+
+async def page_fetch(page, url, headers=None, binary=False):
+    res = await page.evaluate(PAGE_FETCH_JS, [url, headers or {}, binary])
+    body = base64.b64decode(res["body"]) if binary else res["body"]
+    return res["status"], body
+
+
 def normalise(rec: dict, tax: str):
     if not isinstance(rec, dict) or "id" not in rec:
         return None
@@ -87,8 +105,7 @@ def keep(item) -> bool:
     return True
 
 
-async def collect_items(context, discover=False):
-    page = await context.new_page()
+async def collect_items(page, discover=False):
     captured, token, api_log = {}, {"v": None}, []
 
     async def on_response(resp):
@@ -116,21 +133,22 @@ async def collect_items(context, discover=False):
         pass
     await page.wait_for_timeout(2000)
 
-    headers = {"Accept": "application/json"}
-    if token["v"]:
-        headers["Authorization"] = f"Bearer {token['v']}"
     for tax_id in TAX_IDS:
         if tax_id in captured:
             continue
-        try:
-            r = await context.request.get(urljoin(BASE, UPDATES_API.format(tax_id)),
-                                          headers=headers, timeout=NAV_TIMEOUT)
-            if r.ok:
-                captured[tax_id] = await r.json()
-            else:
-                print(f"[warn] feed {TAX_IDS[tax_id]} returned HTTP {r.status}")
-        except Exception as e:
-            print(f"[warn] feed {TAX_IDS[tax_id]}: {e}")
+        url = urljoin(BASE, UPDATES_API.format(tax_id))
+        attempts = [{"Accept": "application/json"}]
+        if token["v"]:
+            attempts.insert(0, {"Accept": "application/json", "Authorization": f"Bearer {token['v']}"})
+        for hdrs in attempts:
+            try:
+                status, body = await page_fetch(page, url, hdrs)
+                if status == 200:
+                    captured[tax_id] = json.loads(body)
+                    break
+                print(f"[warn] feed {TAX_IDS[tax_id]} returned HTTP {status}")
+            except Exception as e:
+                print(f"[warn] feed {TAX_IDS[tax_id]}: {e}")
 
     items = {}
     for tax_id, records in captured.items():
@@ -145,74 +163,65 @@ async def collect_items(context, discover=False):
 
     if discover:
         Path("discover").mkdir(exist_ok=True)
-        for extra in ("content-page/explore-notification", "content-page/explore-circulars"):
-            try:
-                await page.goto(urljoin(BASE, extra), wait_until="domcontentloaded", timeout=NAV_TIMEOUT)
-                await page.wait_for_load_state("networkidle", timeout=NAV_TIMEOUT)
-            except Exception:
-                pass
-        await page.wait_for_timeout(1500)
         await page.screenshot(path="discover/last_page.png", full_page=True)
         Path("discover/api_calls.json").write_text(json.dumps(api_log, indent=1, ensure_ascii=False), encoding="utf-8")
         Path("discover/links_found.json").write_text(json.dumps(items, indent=1, ensure_ascii=False), encoding="utf-8")
         print(f"[discover] {len(items)} documents, {len(api_log)} API calls -> ./discover/")
 
-    await page.close()
     return items
 
 
-async def fetch_pdf(context, item):
-    candidates = []
-    if item.get("doc_path"):
-        candidates.append(urljoin(BASE, item["doc_path"]))
-
-    async def try_get(u):
+async def fetch_pdf(context, home, item):
+    async def get_pdf(u):
         try:
-            r = await context.request.get(u, timeout=NAV_TIMEOUT)
-            body = await r.body()
-            return body if body[:5] == b"%PDF-" else None
+            status, body = await page_fetch(home, u, binary=True)
+            return body if status == 200 and body[:5] == b"%PDF-" else None
         except Exception:
             return None
 
-    for u in candidates:
-        data = await try_get(u)
+    if item.get("doc_path"):
+        data = await get_pdf(urljoin(BASE, item["doc_path"]))
         if data:
             return data
 
-    page = await context.new_page()
-    seen = []
-    page.on("response", lambda r: seen.append(r.url) if (
-        "pdf" in r.headers.get("content-type", "").lower()
-        or "octet-stream" in r.headers.get("content-type", "").lower()) else None)
+    viewer = await context.new_page()
+    seen, bodies = [], []
+
+    async def on_resp(r):
+        ct = r.headers.get("content-type", "").lower()
+        if "pdf" in ct or "octet-stream" in ct:
+            seen.append(r.url)
+            try:
+                if r.status == 200:
+                    b = await r.body()
+                    if b[:5] == b"%PDF-":
+                        bodies.append(b)
+            except Exception:
+                pass
+    viewer.on("response", lambda r: asyncio.ensure_future(on_resp(r)))
     try:
-        await page.goto(item["url"], wait_until="domcontentloaded", timeout=NAV_TIMEOUT)
-        await page.wait_for_load_state("networkidle", timeout=NAV_TIMEOUT)
+        await viewer.goto(item["url"], wait_until="domcontentloaded", timeout=NAV_TIMEOUT)
+        await viewer.wait_for_load_state("networkidle", timeout=NAV_TIMEOUT)
     except Exception as e:
         print(f"  [warn] viewer: {e}")
-    await page.wait_for_timeout(2000)
+    await viewer.wait_for_timeout(3000)
     try:
-        seen += await page.evaluate("""() => Array.from(
+        seen += await viewer.evaluate("""() => Array.from(
             document.querySelectorAll('iframe[src], embed[src], object[data]')).map(e => e.src || e.data)""")
     except Exception:
         pass
 
-    data = None
-    for u in dict.fromkeys(x for x in seen if x):
-        if u.startswith("blob:"):
+    data = max(bodies, key=len) if bodies else None
+    if not data:
+        for u in dict.fromkeys(x for x in seen if x):
             try:
-                b64 = await page.evaluate("""async (u) => {
-                    const a = new Uint8Array(await (await fetch(u)).arrayBuffer());
-                    let s = ''; for (let i = 0; i < a.length; i++) s += String.fromCharCode(a[i]);
-                    return btoa(s); }""", u)
-                body = base64.b64decode(b64)
-                data = body if body[:5] == b"%PDF-" else None
+                status, body = await page_fetch(viewer, u, binary=True)
+                if status == 200 and body[:5] == b"%PDF-":
+                    data = body
+                    break
             except Exception:
-                data = None
-        else:
-            data = await try_get(u)
-        if data:
-            break
-    await page.close()
+                pass
+    await viewer.close()
     return data
 
 
@@ -252,8 +261,8 @@ def send_to_make(item, pdf, text, test=False):
     r.raise_for_status()
 
 
-async def process(context, item, test=False):
-    pdf = await fetch_pdf(context, item)
+async def process(context, home, item, test=False):
+    pdf = await fetch_pdf(context, home, item)
     text = pdf_text(pdf) if pdf else ""
     print(f"     pdf={'%d KB' % (len(pdf) // 1024) if pdf else 'NOT FOUND'} text={len(text)} chars")
     send_to_make(item, pdf, text, test=test)
@@ -271,10 +280,18 @@ async def main():
         browser = await p.chromium.launch(executable_path=os.getenv("CHROME_PATH") or None)
         context = await browser.new_context(user_agent=UA, accept_downloads=False,
                                             locale="en-IN", timezone_id="Asia/Kolkata")
-        found = await collect_items(context, discover=args.discover)
+        home = await context.new_page()
+        found = await collect_items(home, discover=args.discover)
         print(f"[scan] {len(found)} documents in total")
 
         if args.discover:
+            if found:
+                item = max(found.values(), key=lambda v: int(v["id"]))
+                pdf = await fetch_pdf(context, home, item)
+                print(f"[discover] PDF test for {item['title'][:70]}: "
+                      f"{'OK, %d KB' % (len(pdf) // 1024) if pdf else 'NOT FOUND'}")
+                if pdf:
+                    print(f"[discover] text extracted: {len(pdf_text(pdf))} characters")
             await browser.close()
             return
 
@@ -286,7 +303,7 @@ async def main():
         if args.test:
             item = max(found.values(), key=lambda v: int(v["id"]))
             print(f"[test] sending newest: {item['tax']} | {item['title'][:90]}")
-            await process(context, item, test=True)
+            await process(context, home, item, test=True)
             print("[test] sent to Make - check your inbox")
             await browser.close()
             return
@@ -331,7 +348,7 @@ async def main():
             if args.dry_run:
                 continue
             try:
-                pdf = await process(context, item)
+                pdf = await process(context, home, item)
             except Exception as e:
                 failures += 1
                 print(f"     [error] could not send, will retry next run: {e}")
