@@ -49,6 +49,13 @@
    "tax": "Central Excise",
    "title": "54/2026-Central Excise - Seeks to amend Notification No. 06/2026-Central Excise dated 26.03.2026 to revise the Special Additional Excise Duty (SAED) rate on exports of petrol and diesel outside India."
   },
+  "notifications/1010786": {
+   "first_seen": "2026-11-12T17:34:53+00:00",
+   "pdf": false,
+   "sent": true,
+   "tax": "GST",
+   "title": "09/2026-Central Tax (Rate) - Seeks to amend Notification No. 17/2017-Central Tax (Rate), dated 28th June, 2017, to give effect to the recommendations made by the GST Council in its 57th meeting."
+  },
   "notifications/1010787": {
    "first_seen": "2026-11-11T08:21:00+00:00",
    "seeded": true,
@@ -113,5 +120,6 @@
    "title": "27/2026-Customs (ADD) - Seeks to provide for provisional assessment of imports of 'Alloy Steel Chisel/tool and Hydraulic Rock Breaker in fully assembled condition', including specified assemblies/sub-assemblies/components of Hydraulic Rock Breakers, exported from Malaysia, pursuant to initiation of an anti-circumvention investigation"
   }
  },
+ "last_new_at": "2026-11-12T17:34:53+00:00",
  "seeded_at": "2026-11-11T08:21:00+00:00"
 }
