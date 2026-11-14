@@ -118,8 +118,15 @@
    "sent": false,
    "tax": "Customs",
    "title": "27/2026-Customs (ADD) - Seeks to provide for provisional assessment of imports of 'Alloy Steel Chisel/tool and Hydraulic Rock Breaker in fully assembled condition', including specified assemblies/sub-assemblies/components of Hydraulic Rock Breakers, exported from Malaysia, pursuant to initiation of an anti-circumvention investigation"
+  },
+  "notifications/1010825": {
+   "first_seen": "2026-11-14T11:32:30+00:00",
+   "pdf": false,
+   "sent": true,
+   "tax": "Customs",
+   "title": "28/2026-Customs (ADD) - Seeks to amend Notification No. 18/2026-Customs (ADD) dated 27.07.2026"
   }
  },
- "last_new_at": "2026-11-12T17:34:53+00:00",
+ "last_new_at": "2026-11-14T11:32:30+00:00",
  "seeded_at": "2026-11-11T08:21:00+00:00"
 }
