@@ -139,8 +139,22 @@
    "sent": true,
    "tax": "Customs",
    "title": "92/2026-Customs (NT) - Appointment of Common Adjudicating Authority in the case of M/s Oneplus Technology India Pvt. Ltd (IEC: AADCO2827M) – Consolidated Adjudication of Multiple Show Cause Notices arising from SVB Invesigation Report No. 219/AC/SVB/AVB/2024-25 dated 31.03.2025."
+  },
+  "notifications/1010828": {
+   "first_seen": "2026-11-17T08:31:19+00:00",
+   "pdf": false,
+   "sent": true,
+   "tax": "Central Excise",
+   "title": "57/2026-Central Excise - Seeks to amend Notification No. 06/2026-Central Excise dated 26.03.2026 to revise the Special Additional Excise Duty (SAED) rate on exports of diesel outside India."
+  },
+  "notifications/1010829": {
+   "first_seen": "2026-11-17T08:32:01+00:00",
+   "pdf": false,
+   "sent": true,
+   "tax": "Central Excise",
+   "title": "58/2026-Central Excise - Seeks to amend Notification No. 08/2026-Central Excise dated 26.03.2026 to revise the Special Additional Excise Duty (SAED) rate on exports of Aviation Turbine Fuel (ATF) outside India."
   }
  },
- "last_new_at": "2026-11-16T16:46:32+00:00",
+ "last_new_at": "2026-11-17T08:32:01+00:00",
  "seeded_at": "2026-11-11T08:21:00+00:00"
 }
