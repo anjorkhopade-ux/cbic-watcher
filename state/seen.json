@@ -160,8 +160,15 @@
    "sent": true,
    "tax": "GST",
    "title": "Corrigendum - Corrigendum for CGST Amendment rules 2026 issued vide notification 05/2026-Central Tax"
+  },
+  "notifications/1010831": {
+   "first_seen": "2026-11-19T21:29:35+00:00",
+   "pdf": false,
+   "sent": true,
+   "tax": "Customs",
+   "title": "94/2026-Customs (NT) - Fixation of Tariff Value of Edible Oils, Brass Scrap, Areca Nut, Gold and Silver."
   }
  },
- "last_new_at": "2026-11-19T13:06:05+00:00",
+ "last_new_at": "2026-11-19T21:29:35+00:00",
  "seeded_at": "2026-11-11T08:21:00+00:00"
 }
