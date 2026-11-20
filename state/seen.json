@@ -21,6 +21,13 @@
    "tax": "Customs",
    "title": "47/2026 - Implementation of the Sea Cargo Manifest and Transshipment Regulations(SCMTR), 2018."
   },
+  "circulars/1003360": {
+   "first_seen": "2026-11-20T18:43:19+00:00",
+   "pdf": false,
+   "sent": true,
+   "tax": "Customs",
+   "title": "48/2026 - Implementation of the Diamond Imprest Authorisation (DIA) Scheme - Notification No. 37/2026-Customs dated 20.11.2026"
+  },
   "notifications/1009578": {
    "first_seen": "2026-11-11T08:21:00+00:00",
    "seeded": true,
@@ -174,8 +181,22 @@
    "sent": true,
    "tax": "Customs",
    "title": "93/2026-Customs (NT) - Notification of Ramayapatnam Port u/s. 7(1)(a) of Customs Act, 1962\" and it was issued under Section 7(1)(a) of Customs Act, 1962."
+  },
+  "notifications/1010834": {
+   "first_seen": "2026-11-20T18:43:59+00:00",
+   "pdf": false,
+   "sent": true,
+   "tax": "Customs",
+   "title": "37/2026-Customs - Exemption from Applicable Customs Duty and Integrated Tax on Import of Natural Cut and Polished Diamonds under the Diamond Imprest Authorisation Scheme (DIA)"
+  },
+  "notifications/1010835": {
+   "first_seen": "2026-11-20T18:44:34+00:00",
+   "pdf": false,
+   "sent": true,
+   "tax": "Customs",
+   "title": "95/2026-Customs (NT) - Notification of the Chharchhum (Dharchula, Pithoragarh, Uttarakhand)–Ashigadama (Darchula, Nepal) Motorable Bridge under Section 7 of the Customs Act, 1962"
   }
  },
- "last_new_at": "2026-11-20T10:21:38+00:00",
+ "last_new_at": "2026-11-20T18:44:34+00:00",
  "seeded_at": "2026-11-11T08:21:00+00:00"
 }
