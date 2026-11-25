@@ -35,6 +35,13 @@
    "tax": "Customs",
    "title": "49/2026 - Operationalisation of facility for affixing mandatory declarations under the Legal Metrology (Packaged Commodities) Rules, 2011 by AEO Tier-2 and Tier-3 and other importers, 1962"
   },
+  "circulars/1003362": {
+   "first_seen": "2026-11-25T19:55:03+00:00",
+   "pdf": false,
+   "sent": true,
+   "tax": "Customs",
+   "title": "50/2026 - Minor amendment in Customs Circulars pursuant to the amendment in Para 4.49 of the Foreign Trade Policy (FTP)"
+  },
   "notifications/1009578": {
    "first_seen": "2026-11-11T08:21:00+00:00",
    "seeded": true,
@@ -216,8 +223,22 @@
    "sent": true,
    "tax": "Customs",
    "title": "96/2026-Customs (NT) - Fixation of Tariff Value of Edible Oils,Brass Scrap, Areca Nut, Gold and Silver"
+  },
+  "notifications/1010838": {
+   "first_seen": "2026-11-25T19:55:17+00:00",
+   "pdf": false,
+   "sent": true,
+   "tax": "GST",
+   "title": "08/2026- Central Tax - Amendment in CGST Rules,2017."
+  },
+  "notifications/1010839": {
+   "first_seen": "2026-11-25T19:55:33+00:00",
+   "pdf": false,
+   "sent": true,
+   "tax": "GST",
+   "title": "Corrigendum - Corrigendum for CGST Amendment rules 2026 issued vide notification 05/2026-Central Tax"
   }
  },
- "last_new_at": "2026-11-25T10:04:08+00:00",
+ "last_new_at": "2026-11-25T19:55:33+00:00",
  "seeded_at": "2026-11-11T08:21:00+00:00"
 }
