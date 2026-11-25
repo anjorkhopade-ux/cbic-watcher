@@ -28,6 +28,13 @@
    "tax": "Customs",
    "title": "48/2026 - Implementation of the Diamond Imprest Authorisation (DIA) Scheme - Notification No. 37/2026-Customs dated 20.11.2026"
   },
+  "circulars/1003361": {
+   "first_seen": "2026-11-25T10:04:08+00:00",
+   "pdf": false,
+   "sent": true,
+   "tax": "Customs",
+   "title": "49/2026 - Operationalisation of facility for affixing mandatory declarations under the Legal Metrology (Packaged Commodities) Rules, 2011 by AEO Tier-2 and Tier-3 and other importers, 1962"
+  },
   "notifications/1009578": {
    "first_seen": "2026-11-11T08:21:00+00:00",
    "seeded": true,
@@ -211,6 +218,6 @@
    "title": "96/2026-Customs (NT) - Fixation of Tariff Value of Edible Oils,Brass Scrap, Areca Nut, Gold and Silver"
   }
  },
- "last_new_at": "2026-11-23T22:11:16+00:00",
+ "last_new_at": "2026-11-25T10:04:08+00:00",
  "seeded_at": "2026-11-11T08:21:00+00:00"
 }
