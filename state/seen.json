@@ -244,8 +244,15 @@
    "sent": true,
    "tax": "Customs",
    "title": "97/2026-Customs (N.T) - Fixation of Tariff Value of Edible Oils, Brass Scrap, Areca Nut, Gold and Silver"
+  },
+  "notifications/1010841": {
+   "first_seen": "2026-11-27T12:08:00+00:00",
+   "pdf": false,
+   "sent": true,
+   "tax": "Customs",
+   "title": "98/2026-Customs (NT) - Appointment of Common Adjudicating Authority in the case of M/s Actia Automotive India Pvt. Ltd (IEC: AAVCA9828N)– Consolidated Adjudication of Multiple Show Cause Notices arising from SVB Invesigation Report No. 109/2025-26 dated 12.03.2026"
   }
  },
- "last_new_at": "2026-11-26T20:26:49+00:00",
+ "last_new_at": "2026-11-27T12:08:00+00:00",
  "seeded_at": "2026-11-11T08:21:00+00:00"
 }
